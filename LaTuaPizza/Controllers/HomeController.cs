@@ -13,9 +13,12 @@ namespace LaTuaPizza.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly _5510Context _context;
+
+        public HomeController(ILogger<HomeController> logger, _5510Context context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -32,6 +35,23 @@ namespace LaTuaPizza.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CheckUser([Bind("Email,Password")] LoginCred loginCred)
+        {
+            if (ModelState.IsValid)
+            {
+                LoginCred user = _context.LoginCred.Where(a => a.Email == loginCred.Email && a.Password == loginCred.Password).FirstOrDefault();
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid Email/Password");
+                    return View("Index",loginCred);
+                }
+            }
+            //Go to Menu page
+            return Redirect("/Menus");
         }
     }
 }

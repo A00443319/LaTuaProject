@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using LaTuaPizza.Models;
 
@@ -37,21 +38,27 @@ namespace LaTuaPizza.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        /*
+         * Method to validate user's credentials.
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CheckUser([Bind("Email,Password")] LoginCred loginCred)
         {
             if (ModelState.IsValid)
             {
+                //check user email and password
                 LoginCred user = _context.LoginCred.Where(a => a.Email == loginCred.Email && a.Password == loginCred.Password).FirstOrDefault();
                 if (user == null)
                 {
+                    //throw error message
                     ModelState.AddModelError(string.Empty, "Invalid Email/Password");
                     return View("Index",loginCred);
                 }
             }
             //Go to Menu page
-            return Redirect("/Menus");
+            HttpContext.Session.SetString("email", loginCred.Email);
+            return RedirectToAction("Index","Menus");
         }
     }
 }

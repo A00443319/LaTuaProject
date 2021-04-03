@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LaTuaPizza.Models;
@@ -19,10 +20,18 @@ namespace LaTuaPizza.Controllers
         }
 
         // GET: Menus
-        public async Task<IActionResult> Index()
+        /*public async Task<IActionResult> Index()
         {
             return View(await _context.Menu.ToListAsync());
+        }*/
+
+        public IActionResult Index()
+        {
+            ViewBag.email = HttpContext.Session.GetString("email");
+            ViewBag.Menu = _context.Menu.ToList();
+            return View();
         }
+
 
         // GET: Menus/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -1,47 +1,53 @@
-﻿@model IEnumerable<LaTuaPizza.Models.Menu>
+﻿@using LaTuaPizza.Models
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MenuName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MenuDesc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MenuName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MenuDesc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MenuId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MenuId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MenuId">Delete</a>
-            </td>
-        </tr>
+@{ 
+    var Menu = (List<Menu>)ViewBag.Menu;
 }
-    </tbody>
-</table>
+<h1>Menu</h1>
+<div id="content">Hello, @ViewBag.email</div>
+<div id="cards">
+    @foreach (var item in Menu)
+    {
+
+        <div class="card" style="width: 18rem; height:27rem;">
+            <img class="card-img-top" src="~/images/Margherita.png" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">
+                    @Html.DisplayFor(modelItem => item.MenuName)
+                    <span style="float:right;">
+                        @Html.DisplayFor(modelItem => item.Price) $
+                    </span>
+                </h5>
+                <p class="card-text">@Html.DisplayFor(modelItem => item.MenuDesc)</p>
+
+                <div class="input-group mb-3">
+                    <label>Choose quantity : </label>
+                    <select name="quantity" style="margin-bottom: 5px; margin-left:5px;" >
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+                <div class="add_to_cart" style="position: absolute;top: 90%;left: 40%;">
+                    <button class="btn btn-primary" type="button">Add</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div style="margin:50px; text-align:center;">
+    <button class="btn btn-primary" id="checkout" type="button" style="width:20%;">(0)<i class="fa fa-cart-plus"></i>   Proceed to checkout</button>
+</div>
+

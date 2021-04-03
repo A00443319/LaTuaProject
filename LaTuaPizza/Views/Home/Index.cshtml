@@ -1,12 +1,11 @@
 ﻿@model LaTuaPizza.Models.LoginCred
 
+
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-left">
-    <!--<h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>-->
     <h1>Login</h1>
     <hr />
     <div class="row">
@@ -24,7 +23,7 @@
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div>
-                    <p>New User?<span><a href="">Register now</a></span></p>
+                    <p>New User?<span><a href="@Url.Action("Create", "Menus")">Register now</a></span></p>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Login" class="btn btn-primary" />

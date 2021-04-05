@@ -28,6 +28,8 @@ namespace LaTuaPizza.Models
         public virtual DbSet<OrdStatus> OrdStatus { get; set; }
         public virtual DbSet<OrderInfo> OrderInfo { get; set; }
 
+        public virtual DbSet<Signup> Signup { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -162,7 +164,7 @@ namespace LaTuaPizza.Models
                 entity.ToTable("login_cred");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("uc_Email")
+                    .HasDatabaseName("uc_Email")
                     .IsUnique();
 
                 entity.Property(e => e.Email)

@@ -4,15 +4,15 @@
     ViewData["Title"] = "Index";
 }
 
-@{ 
+@{
     var Menu = (List<Menu>)ViewBag.Menu;
 }
 <h1>Menu</h1>
 <div id="content">Hello, @ViewBag.email</div>
+<div id="count" hidden>@Menu.Count</div>
 <div id="cards">
     @foreach (var item in Menu)
     {
-
         <div class="card" style="width: 18rem; height:27rem;">
             <img class="card-img-top" src="~/images/Margherita.png" alt="Card image cap">
             <div class="card-body">
@@ -26,8 +26,8 @@
 
                 <div class="input-group mb-3">
                     <label>Choose quantity : </label>
-                    <select name="quantity" style="margin-bottom: 5px; margin-left:5px;" >
-                        <option value="0" selected>0</option>
+                    <select id="@Html.DisplayFor(modelItem => item.MenuId)" name="quantity" style="margin-bottom: 5px; margin-left:5px;">
+                        <option value="" selected>0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -40,14 +40,75 @@
                         <option value="10">10</option>
                     </select>
                 </div>
-                <div class="add_to_cart" style="position: absolute;top: 90%;left: 40%;">
-                    <button class="btn btn-primary" type="button">Add</button>
+                <div class="cart_buttons">
+                    <div class="add_to_cart" id="addtocart_@Html.DisplayFor(modelItem => item.MenuId)" style="position: absolute;top: 90%;left: 40%;">
+                        <button class="btn btn-primary add" id="add_@Html.DisplayFor(modelItem => item.MenuId)" type="button">Add</button>
+                    </div>
+                    <div class="remove_from_cart" id="removeFromcart_@Html.DisplayFor(modelItem => item.MenuId)" style="position: absolute;top: 90%;left: 35%;" hidden>
+                        <button class="btn btn-danger remove" id="remove_@Html.DisplayFor(modelItem => item.MenuId)" type="button">Remove</button>
+                    </div>
                 </div>
             </div>
         </div>
     }
 </div>
 <div style="margin:50px; text-align:center;">
-    <button class="btn btn-primary" id="checkout" type="button" style="width:20%;">(0)<i class="fa fa-cart-plus"></i>   Proceed to checkout</button>
+    <button class="btn btn-primary" id="checkout" type="submit" style="width:20%;">(<span id="cart-total">0</span>)<i class="fa fa-cart-plus"></i>   Proceed to checkout</button>
 </div>
+<script>
+//non react
+    //add event listeners to each button
+    var cartItems = 0;
+    var count = document.getElementById("count");
+    var addToCartButtons = document.getElementsByClassName('add');
+    var removeCartButtons = document.getElementsByClassName('remove');
+    var menuQuantities = document.getElementsByName("quantity");
 
+    for (var i = 0; i < addToCartButtons.length; i++) {
+        var addCartButton = addToCartButtons[i];
+        var removeCartButton = removeCartButtons[i];
+        var selectedQuantity = menuQuantities[i];
+
+        selectedQuantity.addEventListener('change', function (e) {
+            selectedQuantity.value = $(this).val();
+        });
+
+        addCartButton.addEventListener('click', function (e) {
+            var quantity = $(this).parent().parent().siblings('.input-group').children('select').val();
+            if (quantity > 0) {
+                $(this).parent().siblings().removeAttr('hidden');
+                $(this).parent().attr('hidden', true);
+                cartItems += 1;
+                $("#cart-total").text(cartItems);
+            } else {
+                alert("Quantity not selected!");
+            }
+
+
+        });
+        removeCartButton.addEventListener('click', function (e) {
+            $(this).parent().attr('hidden',true);
+            $(this).parent().siblings().removeAttr('hidden');
+            cartItems -= 1;
+            $("#cart-total").text(cartItems);
+        });
+    }
+
+
+
+    $("#checkout").on("click", function (e) {
+        alert("checkout");
+        //create a json with menuid, qty and send ajax post request
+
+        
+        for (var i = 0; i < count; i++) {
+          var selectedQuantity = menuQuantities[i];
+        }
+    });
+
+    function updateCart() {
+        //get all non-zero quantites of each menu id.
+        
+    }
+
+</script>

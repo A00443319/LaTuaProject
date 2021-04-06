@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LaTuaPizza.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace LaTuaPizza.Controllers
 {
@@ -19,10 +20,13 @@ namespace LaTuaPizza.Controllers
         }
 
         // GET: CardDetails
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var _5510Context = _context.CardDetails.Include(c => c.PhoneNavigation);
-            return View(await _5510Context.ToListAsync());
+            //get user phone number and store in ViewBag
+            var userEmail = HttpContext.Session.GetString("email");
+            Customer user = _context.Customer.Where(a => a.Email == userEmail).FirstOrDefault();
+            ViewBag.userPhone = user.Phone;
+            return View();
         }
 
         // GET: CardDetails/Details/5
@@ -154,6 +158,20 @@ namespace LaTuaPizza.Controllers
         private bool CardDetailsExists(int id)
         {
             return _context.CardDetails.Any(e => e.CardNo == id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Validate([Bind("CardNo,CardName,Phone,Expiry,CardType")] CardDetails cardDetails)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(cardDetails);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["Phone"] = new SelectList(_context.Customer, "Phone", "Fname", cardDetails.Phone);
+            return View(cardDetails);
         }
     }
 }

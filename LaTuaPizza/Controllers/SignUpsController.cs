@@ -19,9 +19,9 @@ namespace LaTuaPizza.Controllers
         }
 
         // GET: SignUps
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.SignUps.ToListAsync());
+            return View();
         }
 
         // GET: SignUps/Details/5
@@ -53,15 +53,18 @@ namespace LaTuaPizza.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SignupId,FirstName,LastName,Email,PhoneNumber,Password,ConfirmPass,City,Province,PostalCode")] SignUp signUp)
+        public IActionResult Create(Register register)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(signUp);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                LoginCred cred = register.Credentials;
+                _context.Add(cred);
+                _context.SaveChanges();
+                register.User.EmailNavigation = _context.LoginCred.Where(a => a.Email == cred.Email).FirstOrDefault();
+                _context.Add(register.User);
+                _context.SaveChanges();
             }
-            return View(signUp);
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: SignUps/Edit/5

@@ -66,10 +66,6 @@ namespace LaTuaPizza
             if (Regex.IsMatch(cNumber, "^(34|37)")
                 && (CardType.Amex) != 0)
                 return cNumber.Length == 15;
-
-           
-           
-
             return false;
         }
 

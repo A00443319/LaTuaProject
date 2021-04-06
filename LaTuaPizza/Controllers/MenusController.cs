@@ -157,5 +157,12 @@ namespace LaTuaPizza.Controllers
         {
             return _context.Menu.Any(e => e.MenuId == id);
         }
+
+        [HttpPost]
+        public IActionResult ProcessCart([FromBody] string request)
+        {
+            //Console.WriteLine();
+            return RedirectToAction("Index", "CardDetails");
+        }
     }
 }

@@ -1,83 +1,53 @@
-﻿@model IEnumerable<LaTuaPizza.Models.SignUp>
+﻿@model LaTuaPizza.Models.Register
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h4>SignUp</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="User.Fname" class="control-label"></label>
+                <input asp-for="User.Fname" class="form-control" />
+                <span asp-validation-for="User.Fname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Lname" class="control-label"></label>
+                <input asp-for="User.Lname" class="form-control" />
+                <span asp-validation-for="User.Lname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Credentials.Email" class="control-label"></label>
+                <input asp-for="Credentials.Email" class="form-control" />
+                <span asp-validation-for="Credentials.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Phone" class="control-label"></label>
+                <input asp-for="User.Phone" class="form-control" />
+                <span asp-validation-for="User.Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Credentials.Password" class="control-label"></label>
+                <input type="password" asp-for="Credentials.Password" class="form-control" />
+                <span asp-validation-for="Credentials.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ConfirmPass)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Province)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostalCode)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConfirmPass)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Province)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostalCode)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SignupId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SignupId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SignupId">Delete</a>
-            </td>
-        </tr>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-    </tbody>
-</table>

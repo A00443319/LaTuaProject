@@ -11,10 +11,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 
 namespace LaTuaPizza.Models
-
-
-
-
 {
     public partial class CardDetails
     {
@@ -28,6 +24,7 @@ namespace LaTuaPizza.Models
         [Required(ErrorMessage = "Card Number is required")]
         [Range(100000000000000, 9999999999999999, ErrorMessage = "must be between 15 or 16 digits")]
         public int CardNo { get; set; }
+
         [Required(ErrorMessage = "Card Holders Name is required")]
         [DisplayName("Card Holders Name")]
         [StringLength(100)]

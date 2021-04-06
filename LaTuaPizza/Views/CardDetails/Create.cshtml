@@ -1,13 +1,13 @@
 @model LaTuaPizza.Models.CardDetails
 
-@{
-    ViewData["Title"] = "Create";
-}
+@{ ViewData["Title"] = "Create"; }
 
 <h1>Create</h1>
 
 <h4>CardDetails</h4>
+
 <hr />
+  
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -24,17 +24,31 @@
             </div>
             <div class="form-group">
                 <label asp-for="Phone" class="control-label"></label>
-                <select asp-for="Phone" class ="form-control" asp-items="ViewBag.Phone"></select>
+                <select asp-for="Phone" class="form-control"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Expiry" class="control-label"></label>
                 <input asp-for="Expiry" class="form-control" />
+                @Html.DisplayFor(modelItem => modelItem.Expiry, "{0:dd/MM/yyyy}")
                 <span asp-validation-for="Expiry" class="text-danger"></span>
+
             </div>
             <div class="form-group">
-                <label asp-for="CardType" class="control-label"></label>
-                <input asp-for="CardType" class="form-control" />
-                <span asp-validation-for="CardType" class="text-danger"></span>
+                
+                <div class="col-md-10">
+                    @Html.LabelFor(model => model.CardType, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.RadioButtonFor(model => model.CardType, "MasterCard") Master Card
+                    @Html.RadioButtonFor(model => model.CardType, "Visa") Visa
+                    @Html.RadioButtonFor(model => model.CardType, "American Express") American Express
+
+
+
+
+
+                </div>
+                
+
+
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

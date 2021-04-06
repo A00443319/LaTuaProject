@@ -47,7 +47,7 @@ namespace LaTuaPizza.Controllers
         // GET: CardDetails/Create
         public IActionResult Create()
         {
-            ViewData["Phone"] = new SelectList(_context.Customer, "Phone", "Fname");
+         ViewData["Phone"] = new SelectList(_context.Customer, "Phone", "Fname");
             return View();
         }
 

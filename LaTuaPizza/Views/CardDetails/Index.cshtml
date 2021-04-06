@@ -1,53 +1,59 @@
 @model IEnumerable<LaTuaPizza.Models.CardDetails>
 
-@{
-    ViewData["Title"] = "Index";
-}
+@{ ViewData["Title"] = "Index"; }
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CardName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Expiry)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CardType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CardName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Expiry)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CardType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNavigation.Fname)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CardNo">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CardNo">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CardNo">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <a asp-action="Create">Create New</a>
+    </p>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+
+                    @Html.DisplayNameFor(model => model.CardName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Expiry)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CardType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNavigation)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CardName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Expiry)
+        </td>
+        <td>
+
+
+            @Html.DisplayFor(modelItem => item.CardType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PhoneNavigation.Fname)
+        </td>
+        <td>
+            <a asp-action="Edit" asp-route-id="@item.CardNo">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.CardNo">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.CardNo">Delete</a>
+        </td>
+    </tr>}
+        </tbody>
+
+
+        </table>
+    

@@ -27,8 +27,7 @@ namespace LaTuaPizza.Models
         public virtual DbSet<MenuItem> MenuItem { get; set; }
         public virtual DbSet<OrdStatus> OrdStatus { get; set; }
         public virtual DbSet<OrderInfo> OrderInfo { get; set; }
-
-        public virtual DbSet<Signup> Signup { get; set; }
+        public virtual DbSet<SignUp> SignUps { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -304,6 +303,61 @@ namespace LaTuaPizza.Models
                     .HasForeignKey(d => d.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__order_inf__statu__1AD3FDA4");
+            });
+
+            modelBuilder.Entity<SignUp>(entity =>
+            {
+                entity.ToTable("sign_up");
+
+                entity.Property(e => e.SignupId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("Signup_ID");
+
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.ConfirmPass)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("Confirm_Pass");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("First_Name")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Last_Name")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PhoneNumber).HasColumnName("Phone_Number");
+
+                entity.Property(e => e.PostalCode)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Postal_Code")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Province)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsFixedLength(true);
             });
 
             OnModelCreatingPartial(modelBuilder);

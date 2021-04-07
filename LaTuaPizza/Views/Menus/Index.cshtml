@@ -56,59 +56,83 @@
     <button class="btn btn-primary" id="checkout" type="submit" style="width:20%;">(<span id="cart-total">0</span>)<i class="fa fa-cart-plus"></i>   Proceed to checkout</button>
 </div>
 <script>
-//non react
-    //add event listeners to each button
-    var cartItems = 0;
-    var count = document.getElementById("count");
+
+    var cart = [];
+    var cartQuantity = 0;
+    var count = @Menu.Count;
+    var menuQuantities = document.getElementsByName("quantity");
     var addToCartButtons = document.getElementsByClassName('add');
     var removeCartButtons = document.getElementsByClassName('remove');
-    var menuQuantities = document.getElementsByName("quantity");
 
-    for (var i = 0; i < addToCartButtons.length; i++) {
+    for (var i = 0; i < count; i++) {
         var addCartButton = addToCartButtons[i];
         var removeCartButton = removeCartButtons[i];
         var selectedQuantity = menuQuantities[i];
 
-        selectedQuantity.addEventListener('change', function (e) {
-            selectedQuantity.value = $(this).val();
-        });
-
         addCartButton.addEventListener('click', function (e) {
-            var quantity = $(this).parent().parent().siblings('.input-group').children('select').val();
+            var select = $(this).parent().parent().siblings('.input-group').children('select')
+            var quantity = select.val();
+            var menu_id = select.attr('id');
             if (quantity > 0) {
+                select.attr("disabled", true);
                 $(this).parent().siblings().removeAttr('hidden');
                 $(this).parent().attr('hidden', true);
-                cartItems += 1;
-                $("#cart-total").text(cartItems);
+                cartQuantity += 1;
+                $("#cart-total").text(cartQuantity);
+                updateCart(menu_id, quantity,'add');
             } else {
                 alert("Quantity not selected!");
             }
-
-
         });
+        //[{1:"2"},{2:"4"}]
         removeCartButton.addEventListener('click', function (e) {
+            var select = $(this).parent().parent().siblings('.input-group').children('select');
+            var quantity = select.val();
+            var menu_id = select.attr('id');
+            select.removeAttr('disabled');
             $(this).parent().attr('hidden',true);
             $(this).parent().siblings().removeAttr('hidden');
-            cartItems -= 1;
-            $("#cart-total").text(cartItems);
+            cartQuantity -= 1;
+            updateCart(menu_id, quantity, 'remove');
+            $("#cart-total").text(cartQuantity);
         });
     }
 
 
 
     $("#checkout").on("click", function (e) {
-        alert("checkout");
         //create a json with menuid, qty and send ajax post request
 
-        
-        for (var i = 0; i < count; i++) {
-          var selectedQuantity = menuQuantities[i];
-        }
+        $.ajax({
+            url: '/Menus/ProcessCart',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            traditional: true,
+            data: JSON.stringify(cart),
+            success: function (result) {
+                window.location.href = result.redirectToUrl;
+            },
+            error: function (result) {
+                window.location.href = result.redirectToUrl;
+            }
+        });      
     });
 
-    function updateCart() {
-        //get all non-zero quantites of each menu id.
-        
+    function updateCart(menu_id, quantity,type) {
+        //store all non-zero quantites of each menu id.
+        var cartItem = {};
+        if (type == "add") {
+            cartItem[menu_id] = quantity;
+            cart.push(cartItem); 
+        } else {
+            cart.forEach(item => {
+                for (let id in item)
+                    if (id == menu_id) {
+                        cart.splice(cart.indexOf(id), 1);
+                    }
+            }); 
+        }       
     }
 
 </script>

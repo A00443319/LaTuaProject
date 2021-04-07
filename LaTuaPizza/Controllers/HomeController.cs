@@ -27,6 +27,12 @@ namespace LaTuaPizza.Controllers
             return View();
         }
 
+        public IActionResult UserSignOut()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult Privacy()
         {
             return View();
@@ -55,6 +61,7 @@ namespace LaTuaPizza.Controllers
                     ModelState.AddModelError(string.Empty, "Invalid Email/Password");
                     return View("Index",loginCred);
                 }
+                HttpContext.Session.SetString("isSignedIn", "true");
             }
             //Go to Menu page
             HttpContext.Session.SetString("email", loginCred.Email);

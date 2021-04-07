@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LaTuaPizza.Models;
+using Newtonsoft.Json;
 
 namespace LaTuaPizza.Controllers
 {
@@ -159,10 +160,14 @@ namespace LaTuaPizza.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProcessCart([FromBody] string request)
+        public IActionResult ProcessCart([FromBody] dynamic request)
         {
-            //Console.WriteLine();
-            return RedirectToAction("Index", "CardDetails");
+            Console.WriteLine(request);
+            //return RedirectToAction("Index", "CardDetails");
+            //return "string success";
+            string cart = Convert.ToString(request);
+            HttpContext.Session.SetString("cart", cart);
+            return Json(new { redirectToUrl = Url.Action("Index", "CardDetails") });
         }
     }
 }

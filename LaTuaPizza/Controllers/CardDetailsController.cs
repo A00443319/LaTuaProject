@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LaTuaPizza.Models;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 
 namespace LaTuaPizza.Controllers
 {
@@ -23,6 +24,8 @@ namespace LaTuaPizza.Controllers
         public IActionResult Index()
         {
             //get user phone number and store in ViewBag
+            var cart = HttpContext.Session.GetString("cart");
+            JArray json = JArray.Parse(cart);
             var userEmail = HttpContext.Session.GetString("email");
             Customer user = _context.Customer.Where(a => a.Email == userEmail).FirstOrDefault();
             ViewBag.userPhone = user.Phone;

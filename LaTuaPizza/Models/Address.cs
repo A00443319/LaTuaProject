@@ -21,8 +21,8 @@ namespace LaTuaPizza.Models
         public string City { get; set; }
         public string Province { get; set; }
         public string Country { get; set; }
+        [PostalValidate]
         public string PostalCode { get; set; }
-
         public virtual Customer PhoneNavigation { get; set; }
         public virtual ICollection<OrderInfo> OrderInfo { get; set; }
     }

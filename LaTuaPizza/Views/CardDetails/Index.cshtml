@@ -1,4 +1,6 @@
+
 @model LaTuaPizza.Models.CardDetails
+
 
 @{ ViewData["Title"] = "Index"; }
 
@@ -23,14 +25,19 @@
             </div>
             <div class="form-group">
                 <label asp-for="Expiry" class="control-label"></label>
-                @Html.LabelFor(modelItem => modelItem.Expiry, "{0:dd/MM/yyyy}")
+                
+                <input id ="i3" asp-for="Expiry" type="hidden" class="form-control" />
                 <span class="expiration" style=" border: 1px solid #bbbbbb;">
-                    <input type="text" name="month" placeholder="MM " maxlength="2" size="2" style="margin-bottom: 5px; margin-left:5px;" />
+                    <input type="text" id="i1" name="month" placeholder="MM " maxlength="2" size="2" style="margin-bottom: 5px; margin-left:5px;" />
                     <span>/</span>
-                    <input type="text" name="year" placeholder="YY" maxlength="2" size="2" style="margin-bottom: 5px; margin-left:5px;" />
+                    <input type="text" id="i2" name="year" placeholder="YY" maxlength="2" size="2" style="margin-bottom: 5px; margin-left:5px;" />
                 </span>
                 <span asp-validation-for="Expiry" class="text-danger"></span>
             </div>
+
+
+
+
 
             @Html.LabelFor(model => model.CardType, htmlAttributes: new { @class = "control-label" })
             <div class="form-group">
@@ -51,5 +58,18 @@
                 <input type="submit" value="Pay" class="btn btn-primary" />
             </div>
         </form>
-    </div>
 </div>
+</div>
+<script>
+
+
+    $('#i1').on('change', () => $('#i3')[0].value = $('#i1')[0].value)
+    $('#i2').on('change', () => $('#i3')[0].value += $('#i2')[0].value)
+
+
+
+
+
+
+
+</script>

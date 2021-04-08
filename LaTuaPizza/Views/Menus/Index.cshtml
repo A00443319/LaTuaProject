@@ -52,8 +52,8 @@
         </div>
     }
 </div>
-<div style="margin:50px; text-align:center;">
-    <button class="btn btn-primary" id="checkout" type="submit" style="width:20%;">(<span id="cart-total">0</span>)<i class="fa fa-cart-plus"></i>   Proceed to checkout</button>
+<div class="d-grid gap-2 col-6 mx-auto" style="margin:50px; text-align:center;">
+    <button class="btn btn-success btn-lg btn-block" id="checkout" type="submit">(<span id="cart-total">0</span>)<i class="fa fa-cart-plus"></i>   Proceed to checkout</button>
 </div>
 <script>
 
@@ -103,20 +103,24 @@
     $("#checkout").on("click", function (e) {
         //create a json with menuid, qty and send ajax post request
 
-        $.ajax({
-            url: '/Menus/ProcessCart',
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            traditional: true,
-            data: JSON.stringify(cart),
-            success: function (result) {
-                window.location.href = result.redirectToUrl;
-            },
-            error: function (result) {
-                window.location.href = result.redirectToUrl;
-            }
-        });      
+        if (cart.length > 0) {
+            $.ajax({
+                url: '/Menus/ProcessCart',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                traditional: true,
+                data: JSON.stringify(cart),
+                success: function (result) {
+                    window.location.href = result.redirectToUrl;
+                },
+                error: function (result) {
+                    window.location.href = result.redirectToUrl;
+                }
+            });
+        } else {
+            alert("No items added to the cart!");
+        }
     });
 
     function updateCart(menu_id, quantity,type) {

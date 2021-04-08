@@ -167,7 +167,7 @@ namespace LaTuaPizza.Controllers
             //return "string success";
             string cart = Convert.ToString(request);
             HttpContext.Session.SetString("cart", cart);
-            return Json(new { redirectToUrl = Url.Action("Index", "CardDetails") });
+            return Json(new { redirectToUrl = Url.Action("Index", "Cart") });
         }
     }
 }

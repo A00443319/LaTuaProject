@@ -24,8 +24,8 @@ namespace LaTuaPizza.Controllers
         public IActionResult Index()
         {
             //get user phone number and store in ViewBag
-            //var cart = HttpContext.Session.GetString("cart");
-            //JArray json = JArray.Parse(cart);
+            var cart = HttpContext.Session.GetString("cart");
+            JArray json = JArray.Parse(cart);
             var userEmail = HttpContext.Session.GetString("email");
             Customer user = _context.Customer.Where(a => a.Email == userEmail).FirstOrDefault();
             ViewBag.userPhone = user.Phone;
@@ -54,7 +54,7 @@ namespace LaTuaPizza.Controllers
         // GET: CardDetails/Create
         public IActionResult Create()
         {
-         ViewData["Phone"] = new SelectList(_context.Customer, "Phone", "Fname");
+            ViewData["Phone"] = new SelectList(_context.Customer, "Phone", "Fname");
             return View();
         }
 
@@ -113,7 +113,7 @@ namespace LaTuaPizza.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CardDetailsExists(cardDetails.CardNo))
+                    if (!CardDetailsExists((int)cardDetails.CardNo))
                     {
                         return NotFound();
                     }
@@ -165,16 +165,18 @@ namespace LaTuaPizza.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Validate([Bind("CardNo,CardName,Phone,Expiry,CardType")] CardDetails cardDetails)
+        public IActionResult Validate(CardDetails cardDetails)
         {
+            //Bind[("CardNo,CardName,Phone,Expiry,CardType")]
             if (ModelState.IsValid)
             {
                 _context.Add(cardDetails);
-                await _context.SaveChangesAsync();
+                _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Phone"] = new SelectList(_context.Customer, "Phone", "Fname", cardDetails.Phone);
-            return View(cardDetails);
+            //ViewData["Phone"] = new SelectList(_context.Customer, "Phone", "Fname", cardDetails.Phone);
+            //return View(cardDetails);
+            return RedirectToAction("Index", "CardDetails");
         }
     }
 }

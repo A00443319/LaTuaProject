@@ -19,7 +19,7 @@ namespace LaTuaPizza.Models
         public DateTime CreatedDate { get; set; }
         public int Phone { get; set; }
         public int AddrId { get; set; }
-        public int CardNo { get; set; }
+        public long CardNo { get; set; }
         public int StatusId { get; set; }
         public string PriceBeforeTax { get; set; }
         public string PriceAfterTax { get; set; }

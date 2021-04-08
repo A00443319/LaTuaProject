@@ -1,77 +1,83 @@
-﻿@model IEnumerable<LaTuaPizza.Models.OrderInfo>
+﻿@using LaTuaPizza.Models
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CnfNo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PriceBeforeTax)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PriceAfterTax)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Addr)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CardNoNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CnfNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PriceBeforeTax)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PriceAfterTax)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Addr.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CardNoNavigation.CardName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNavigation.Fname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status.StatusName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.OrdId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrdId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OrdId">Delete</a>
-            </td>
-        </tr>
+@{
+    var Order = (OrderInfo)ViewBag.order;
 }
-    </tbody>
-</table>
+<div class="container">
+    <div class="py-5 text-center">
+        @*<img class="d-block mx-auto mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">*@
+        <object class="d-block mx-auto mb-4" type="image/svg+xml" data="~/images/pizza.svg" style="position:absolute;"></object>
+        <h2>Thank You for your order @Order.PhoneNavigation.Fname!</h2>
+        <p class="lead">Your pizza is getting ready.</p>
+    </div>
+    <hr class="mb-4">
+    <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span>ORDER  #@Order.CnfNo</span>
+    </h4>
+    <h6>Order status : @Order.Status.StatusName <i class="fa fa-check" style="color: forestgreen"></i></h6>
+    <hr class="mb-4">
+    <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Your order</span>
+            </h4>
+            <ul class="list-group mb-3">
+                @foreach (var item in Order.MenuItem)
+                {
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div>
+                            <h6 class="my-0">@item.Menu.MenuName      <span class="text-muted">x</span><span>@item.Qty</span></h6>
+                            <small class="text-muted">@item.Menu.MenuDesc</small>
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>sub toal (CAD)</span>
+                    <strong>$@Order.PriceBeforeTax</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <div>
+                        <small class="text-muted">Taxes</small>
+                        <span class="text-muted">$0</span>
+                    </div>
+                </li>
+                <li class="list-group-item list-group-item-warning d-flex justify-content-between">
+                    <span>Total (CAD)</span>
+                    <strong>$@Order.PriceAfterTax</strong>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-8 order-md-1">
+            <h5 class="mb-3">Billing address</h5>
+            <div class="mb-3">
+                <p><label>@Order.Addr.Unit , @Order.Addr.Street, @Order.Addr.City, @Order.Addr.Province, @Order.Addr.Country, @Order.Addr.PostalCode</label></p>
+            </div>
+            <div class="mb-3">
+                <h5 class="mb-3">Payment</h5>
+                <p>
+                    @switch (@Order.CardNoNavigation.CardType)
+                    {
+                        case "Visa":
+                            <i class="fa fa-cc-visa"></i>
+                            break;
+                        case "Master Card":
+                            <i class="fa fa-cc-mastercard"></i>
+                            break;
+                        case "American Express":
+                            <i class="fa fa-cc-amex"></i>
+                            break;
+                    }
+                    <input id="card_no" type="hidden" value="@Order.CardNo" />
+                    <label id="masked_card_no"></label>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#masked_card_no').text('************' + $('#card_no').val().toString().substr(-4));
+</script>

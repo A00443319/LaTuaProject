@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -27,12 +28,13 @@ namespace LaTuaPizza.Models
         public virtual DbSet<MenuItem> MenuItem { get; set; }
         public virtual DbSet<OrdStatus> OrdStatus { get; set; }
         public virtual DbSet<OrderInfo> OrderInfo { get; set; }
+        public virtual DbSet<SignUp> SignUps { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=tcp:5510inclass.database.windows.net,1433;Initial Catalog=5510;Persist Security Info=False;User ID=dipesh;Password=gamingmouser8!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
@@ -162,7 +164,7 @@ namespace LaTuaPizza.Models
                 entity.ToTable("login_cred");
 
                 entity.HasIndex(e => e.Email)
-                    .HasName("uc_Email")
+                    .HasDatabaseName("uc_Email")
                     .IsUnique();
 
                 entity.Property(e => e.Email)
@@ -302,6 +304,61 @@ namespace LaTuaPizza.Models
                     .HasForeignKey(d => d.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__order_inf__statu__1AD3FDA4");
+            });
+
+            modelBuilder.Entity<SignUp>(entity =>
+            {
+                entity.ToTable("sign_up");
+
+                entity.Property(e => e.SignupId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("Signup_ID");
+
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.ConfirmPass)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("Confirm_Pass");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("First_Name")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Last_Name")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PhoneNumber).HasColumnName("Phone_Number");
+
+                entity.Property(e => e.PostalCode)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("Postal_Code")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Province)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsFixedLength(true);
             });
 
             OnModelCreatingPartial(modelBuilder);

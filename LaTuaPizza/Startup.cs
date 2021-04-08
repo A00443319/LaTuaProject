@@ -5,11 +5,15 @@ using System.Threading.Tasks;
 using LaTuaPizza.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using JavaScriptEngineSwitcher.V8;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Session;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 
 namespace LaTuaPizza
 {
@@ -28,6 +32,13 @@ namespace LaTuaPizza
             services.AddControllersWithViews();
             services.AddDbContext<_5510Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("myDbConn")));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
+            // Make sure a JS engine is registered, or you will get an error!
+            services.AddJsEngineSwitcher(options => options.DefaultEngineName = V8JsEngine.EngineName)
+              .AddV8();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,9 +55,12 @@ namespace LaTuaPizza
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+            // Initialise ReactJS.NET. Must be before static files.
+
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthorization();
 

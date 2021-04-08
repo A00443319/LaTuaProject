@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using LaTuaPizza.Models;
 
@@ -13,14 +14,23 @@ namespace LaTuaPizza.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly _5510Context _context;
+
+        public HomeController(ILogger<HomeController> logger, _5510Context context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult UserSignOut()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Privacy()
@@ -32,6 +42,30 @@ namespace LaTuaPizza.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        /*
+         * Method to validate user's credentials.
+         */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CheckUser([Bind("Email,Password")] LoginCred loginCred)
+        {
+            if (ModelState.IsValid)
+            {
+                //check user email and password
+                LoginCred user = _context.LoginCred.Where(a => a.Email == loginCred.Email && a.Password == loginCred.Password).FirstOrDefault();
+                if (user == null)
+                {
+                    //throw error message
+                    ModelState.AddModelError(string.Empty, "Invalid Email/Password");
+                    return View("Index",loginCred);
+                }
+                HttpContext.Session.SetString("isSignedIn", "true");
+            }
+            //Go to Menu page
+            HttpContext.Session.SetString("email", loginCred.Email);
+            return RedirectToAction("Index","Menus");
         }
     }
 }

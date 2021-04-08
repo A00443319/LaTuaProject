@@ -84,3 +84,21 @@ body {
     top: 90%;
     left: 40%;
 }
+
+svg {
+    display: block;
+    height: 70%;
+    margin: 15% auto;
+}
+
+.pizza {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: dash 5s ease-in-out infinite forwards;
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}

@@ -15,8 +15,5 @@ namespace LaTuaPizza.Models
 
         public LoginCred Credentials { get; set; }
         public Customer User { get; set; }
-
-        public string ConfirmPassword { get; set; }
-
     }
 }

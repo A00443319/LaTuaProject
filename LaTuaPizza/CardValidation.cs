@@ -33,7 +33,6 @@ namespace LaTuaPizza
         {
             var number = Convert.ToInt32(value);
             return IsValidType(number, _cardTypes);
-            Console.WriteLine("test");
         }
 
 

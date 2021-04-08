@@ -16,6 +16,7 @@ namespace LaTuaPizza.Models
             OrderInfo = new HashSet<OrderInfo>();
         }
 
+        //[PhoneValidate]
         public int Phone { get; set; }
         public string Fname { get; set; }
         public string Lname { get; set; }

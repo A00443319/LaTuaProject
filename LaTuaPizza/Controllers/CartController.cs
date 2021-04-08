@@ -21,7 +21,6 @@ namespace LaTuaPizza.Controllers
         }
         public IActionResult Index()
         {
-            var userEmail = HttpContext.Session.GetString("email");
             var cart = HttpContext.Session.GetString("cart");
             JArray json = JArray.Parse(cart);
             
@@ -46,9 +45,14 @@ namespace LaTuaPizza.Controllers
             return View();
         }
 
-        public IActionResult ProcessCart()
+        public IActionResult ProcessCart(Address address)
         {
-
+            //send total amount details to this function from view
+            /*var userEmail = HttpContext.Session.GetString("email");
+            var user = _context.Customer.Where(a => a.Email == userEmail).FirstOrDefault();
+            address.Phone = user.Phone;*/
+           // _context.Add(address);
+            //_context.SaveChanges();
             return RedirectToAction("Index", "CardDetails");
         }
     }

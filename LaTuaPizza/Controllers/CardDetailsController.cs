@@ -14,23 +14,166 @@ namespace LaTuaPizza.Controllers
     public class CardDetailsController : Controller
     {
         private readonly _5510Context _context;
+        private static readonly Random random = new Random();
 
         public CardDetailsController(_5510Context context)
         {
             _context = context;
         }
 
-        // GET: CardDetails
+        // GET: Payment form
         public IActionResult Index()
         {
-            //get user phone number and store in ViewBag
-            var cart = HttpContext.Session.GetString("cart");
-            JArray json = JArray.Parse(cart);
-            var userEmail = HttpContext.Session.GetString("email");
-            Customer user = _context.Customer.Where(a => a.Email == userEmail).FirstOrDefault();
+            Customer user = GetSignedUser();
             ViewBag.userPhone = user.Phone;
+            ViewBag.totalPrice = GetCartTotal();
             return View();
         }
+
+        /*
+         * Reads the session object and gets the user
+         * **/
+        public Customer GetSignedUser()
+        {
+            return _context.Customer.Where(a => a.Email == HttpContext.Session.GetString("email")).FirstOrDefault();
+        }
+
+        /*
+         * Get total price of the cart Items
+         * **/
+        public decimal? GetCartTotal()
+        {
+            List<Cart> cart = GetCart();
+            decimal? menuTotal = (decimal?)0.0;
+            foreach (Cart item in cart)
+            {
+                menuTotal += item.CartItem.Price * item.Qty;
+            }
+            return menuTotal;
+        }
+
+
+        /*
+         * Reads the JSON and creates a Cart list.
+         * **/
+        public List<Cart> GetCart()
+        {
+            var cart = HttpContext.Session.GetString("cart");
+            JArray json = JArray.Parse(cart);
+            List<Cart> cartItems = new List<Cart>();
+            foreach (JObject item in json)
+            {
+                foreach (KeyValuePair<string, JToken> property in item)
+                {
+                    int menuId = Convert.ToInt32(property.Key);
+                    int quantity = Convert.ToInt32(property.Value);
+                    Cart cartItem = new Cart
+                    {
+                        CartItem = _context.Menu.Where(m => m.MenuId == menuId).FirstOrDefault(),
+                        Qty = quantity
+                    };
+                    cartItems.Add(cartItem);
+                }
+            }
+            return cartItems;
+        }
+
+        /*
+         * Validate and Save Card details
+         * **/
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ValidateAndSave(CardDetails cardDetails)
+        {
+            //Bind[("CardNo,CardName,Phone,Expiry,CardType")]
+             if (ModelState.IsValid)
+             {
+                 _context.Add(cardDetails);
+                 _context.SaveChangesAsync();
+                 //return RedirectToAction(nameof(Index));
+             }
+            return RedirectToAction(nameof(CreateOrder));
+            //return RedirectToAction(nameof(Index));
+        }
+
+
+        /*
+         * Creates the order
+         * **/
+        public IActionResult CreateOrder()
+        {
+            // get phone, addr, card, status 
+            var total = GetCartTotal().ToString();
+            Customer user = GetSignedUser();
+            Address address = _context.Address.Where(m => m.Phone == user.Phone).FirstOrDefault();
+            CardDetails card = _context.CardDetails.Where(m => m.Phone == user.Phone).FirstOrDefault();
+            OrdStatus status = _context.OrdStatus.Where(m => m.StatusId == 5).FirstOrDefault();
+
+            if(address != null && card!= null && status != null)
+            {
+                OrderInfo order = new OrderInfo
+                {
+                    CreatedDate = DateTime.Now,
+                    Phone = user.Phone,
+                    StatusId = status.StatusId,
+                    AddrId = address.AddrId,
+                    CardNo = card.CardNo,
+                    PriceBeforeTax = total,
+                    PriceAfterTax = total,
+                    PhoneNavigation = user,
+                    CardNoNavigation = card,
+                    Addr = address,
+                    Status = status
+                };
+
+                order.CnfNo = GenerateConfirmationNumber();
+                HttpContext.Session.SetString("confirmationNumber", order.CnfNo);
+                //save the order 
+                _context.Add(order);
+                _context.SaveChanges();
+            }
+            
+
+           
+            
+            return RedirectToAction(nameof(CreateMenuItem));   
+        }
+
+        /*
+         * Method to save 
+         * **/
+        public IActionResult CreateMenuItem()
+        {
+            List<Cart> cart = GetCart();
+            OrderInfo order = _context.OrderInfo.Where(m => m.CnfNo == HttpContext.Session.GetString("confirmationNumber")).FirstOrDefault();
+            foreach (Cart item in cart)
+            {
+                MenuItem menuItem = new MenuItem
+                {
+                    OrdId = order.OrdId,
+                    MenuId = item.CartItem.MenuId,
+                    Qty = item.Qty
+                };
+                _context.Add(menuItem);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index", "OrderInfo");
+        }
+
+        /*
+         * Method to create order confirmation number
+         * **/
+        public static string GenerateConfirmationNumber()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, 6)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+
+        //------------------------------------------------------------------------------------------------------
+        //SCAFFOLDED METHODS
+
 
         // GET: CardDetails/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -163,20 +306,6 @@ namespace LaTuaPizza.Controllers
             return _context.CardDetails.Any(e => e.CardNo == id);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Validate(CardDetails cardDetails)
-        {
-            //Bind[("CardNo,CardName,Phone,Expiry,CardType")]
-            if (ModelState.IsValid)
-            {
-                _context.Add(cardDetails);
-                _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            //ViewData["Phone"] = new SelectList(_context.Customer, "Phone", "Fname", cardDetails.Phone);
-            //return View(cardDetails);
-            return RedirectToAction("Index", "CardDetails");
-        }
+        
     }
 }

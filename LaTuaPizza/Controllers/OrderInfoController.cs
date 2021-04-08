@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LaTuaPizza.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +20,11 @@ namespace LaTuaPizza.Controllers
         }
 
         // GET: OrderInfo
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var _5510Context = _context.OrderInfo.Include(o => o.Addr).Include(o => o.CardNoNavigation).Include(o => o.PhoneNavigation).Include(o => o.Status);
-            return View(await _5510Context.ToListAsync());
+            OrderInfo order = _context.OrderInfo.Where(o => o.CnfNo == HttpContext.Session.GetString("confirmationNumber")).Include(o => o.Addr).Include(o => o.CardNoNavigation).Include(o => o.PhoneNavigation).Include(o => o.Status).FirstOrDefault();
+            ViewBag.order = order;
+            return View();
         }
 
         // GET: OrderInfo/Details/5

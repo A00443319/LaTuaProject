@@ -63,8 +63,13 @@ namespace LaTuaPizza.Controllers
                 register.User.EmailNavigation = _context.LoginCred.Where(a => a.Email == cred.Email).FirstOrDefault();
                 _context.Add(register.User);
                 _context.SaveChanges();
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            else {
+                //ModelState.AddModelError(string.Empty, "Invalid Phone");
+                return View("Index", register);
+            }
+            
         }
 
         // GET: SignUps/Edit/5

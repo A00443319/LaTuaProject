@@ -48,11 +48,11 @@ namespace LaTuaPizza.Controllers
         public IActionResult ProcessCart(Address address)
         {
             //send total amount details to this function from view
-            /*var userEmail = HttpContext.Session.GetString("email");
+            var userEmail = HttpContext.Session.GetString("email");
             var user = _context.Customer.Where(a => a.Email == userEmail).FirstOrDefault();
-            address.Phone = user.Phone;*/
-           // _context.Add(address);
-            //_context.SaveChanges();
+            address.Phone = user.Phone;
+           _context.Add(address);
+           _context.SaveChanges();
             return RedirectToAction("Index", "CardDetails");
         }
     }

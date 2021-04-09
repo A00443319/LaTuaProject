@@ -132,10 +132,7 @@ namespace LaTuaPizza.Controllers
                 _context.Add(order);
                 _context.SaveChanges();
             }
-            
 
-           
-            
             return RedirectToAction(nameof(CreateMenuItem));   
         }
 

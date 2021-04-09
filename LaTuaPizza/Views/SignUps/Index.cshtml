@@ -12,13 +12,15 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="User.Fname" class="control-label"></label>
-                <input asp-for="User.Fname" class="form-control" />
+                <input id="fname" asp-for="User.Fname" class="form-control" />
                 <span asp-validation-for="User.Fname" class="text-danger"></span>
+                <span id="fname_error" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="User.Lname" class="control-label"></label>
-                <input asp-for="User.Lname" class="form-control" />
+                <input id="lname" asp-for="User.Lname" class="form-control check_alpha" />
                 <span asp-validation-for="User.Lname" class="text-danger"></span>
+                <span id="lname_error" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Credentials.Email" class="control-label"></label>
@@ -27,8 +29,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="User.Phone" class="control-label"></label>
-                <input asp-for="User.Phone" class="form-control"/>
-                <span asp-validation-for="User.Phone" class="text-danger"></span>
+                <input id="phone" asp-for="User.Phone" class="form-control"/>
+                <span id="phone_error" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Credentials.Password" class="control-label"></label>
@@ -41,7 +43,51 @@
         </form>
     </div>
 </div>
+<script>
+    var isFormValid = true;
 
+    $('#phone').focusin(function () {
+        $('#phone_error').text("");
+    });
+
+    $('#lname').focusin(function () {
+        $('#lname_error').text("");
+    });
+
+    $('#fname').focusin(function () {
+        $('#fname_error').text("");
+    });
+
+    $("form").submit(function (e) {
+
+        var phone = $('#phone').val().toString();
+        var fname = $('#fname').val().toString();
+        var lname = $('#lname').val().toString();
+
+        //phone
+        if (!(new RegExp(/^(902|204|306|403|416|418|514|604|613)[0-9]{6}$/).test(phone))) {
+            $('#phone_error').text("Format of phone number '" + phone
+                + "' is invalid\nUse area codes 902, 204, 306, 403, 416, 418, 514, 604, 613 while entering");
+            isFormValid = false;
+        } 
+        //fname
+        if (!(new RegExp(/^[A-Za-z]+$/).test(fname))) {
+            $('#fname_error').text("First name cannot contain numbers and special characters!");
+            isFormValid = false;
+        }
+        //lname
+        if (!(new RegExp(/^[A-Za-z]+$/).test(lname))) {
+            $('#lname_error').text("Last name cannot contain numbers and special characters!");
+            isFormValid = false;
+        }
+
+        if (isFormValid == false) {
+            e.preventDefault(e);
+            alert('Please check the details entered!');
+            isFormValid = true;
+        } 
+    });
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

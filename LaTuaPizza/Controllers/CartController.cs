@@ -19,6 +19,10 @@ namespace LaTuaPizza.Controllers
         {
             _context = context;
         }
+
+        /*
+         * Returns the address form and the user's cart information to the view
+         * **/
         public IActionResult Index()
         {
             var cart = HttpContext.Session.GetString("cart");
@@ -27,7 +31,6 @@ namespace LaTuaPizza.Controllers
             List<Cart> cartItems = new List<Cart>();
 
             //Deserializing Json array.
-            //Get Menu details based on 
             foreach(JObject item in json)
             {
                 foreach (KeyValuePair<string, JToken> property in item)
@@ -45,6 +48,9 @@ namespace LaTuaPizza.Controllers
             return View();
         }
 
+        /*
+         * Saves user's billing address
+         * **/
         public IActionResult ProcessCart(Address address)
         {
             //send total amount details to this function from view

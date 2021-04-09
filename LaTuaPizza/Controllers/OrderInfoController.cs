@@ -19,13 +19,19 @@ namespace LaTuaPizza.Controllers
             _context = context;
         }
 
-        // GET: OrderInfo
+        /*
+         * Displays user's order information
+         * **/
         public IActionResult Index()
         {
             OrderInfo order = _context.OrderInfo.Where(o => o.CnfNo == HttpContext.Session.GetString("confirmationNumber")).Include(o => o.Addr).Include(o => o.CardNoNavigation).Include(o => o.PhoneNavigation).Include(o => o.Status).FirstOrDefault();
             ViewBag.order = order;
             return View();
         }
+
+        //----------------------------------------------------------------------------
+        //SCAFFOLDED METHODS
+
 
         // GET: OrderInfo/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -22,13 +22,20 @@ namespace LaTuaPizza.Controllers
             _context = context;
         }
 
+        /*
+         * Displays the Login form
+         * **/
         public IActionResult Index()
         {
             return View();
         }
 
+        /*
+         * Signs out the user
+         * **/
         public IActionResult UserSignOut()
         {
+            //deletes the stored session variables
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }

@@ -10,7 +10,14 @@
 <div class="container">
     <div class="py-5 text-center">
         @*<img class="d-block mx-auto mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">*@
-        <object class="d-block mx-auto mb-4" type="image/svg+xml" data="~/images/pizza.svg" style="position:absolute;"></object>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="width: 21%; position: absolute; height: 142px; margin-top: -25px;">
+            <path class="pizza" style="fill: none;stroke: #e3a208;stroke-width: 4;stroke-linecap: round;stroke-linejoin: round;stroke-miterlimit: 10;" d="
+    M116.9,43c-20.8-1.6-17.7-17.3-17.7-17.3s-3.5,3.8-13.7,3.5S75,19,75,19S50.6,24.4,59,11.4c12.2-18.7,55.7-3.8,55.7-3.8
+    s42.7,14.6,26.2,33c-12.4,13.8-18.8,2.5-16.4-5.7c3.8-13.2,39.7-7.9,9.6,21.1C97,91.6,60.3,66.7,81,51.8c21.1-15.1,40,8.4,18.1,27
+    c-19.5,16.7-21,19.4-24.2,22.3s-6.7-1.9-11.1,1.3s2.2,20-4.1,21.6c-6.4,1.6-1.9-14.3-9.2-15s-3.5,10.8-7.6,11.5s-2.2-3.8-7.6-4.5
+    S8.7,138.6,4.9,136.7c-3.8-1.9-6.3-13.6,8.6-41S65.8,69,47.8,88.6C23,115.7,21.2,76.1,32,57.7C42.9,39,72.4,39.5,59.3,52.3
+    C43.2,68,40.2,39,56.5,26.7" />
+        </svg>
         <h2>Thank You for your order @Order.PhoneNavigation.Fname!</h2>
         <p class="lead">Your pizza is getting ready.</p>
     </div>
@@ -54,7 +61,7 @@
         <div class="col-md-8 order-md-1">
             <h5 class="mb-3">Billing address</h5>
             <div class="mb-3">
-                <p><label>@Order.Addr.Unit , @Order.Addr.Street, @Order.Addr.City, @Order.Addr.Province, @Order.Addr.Country, @Order.Addr.PostalCode</label></p>
+                <p><label>@Order.Addr.Unit, @Order.Addr.Street, @Order.Addr.City, @Order.Addr.Province, @Order.Addr.Country, @Order.Addr.PostalCode</label></p>
             </div>
             <div class="mb-3">
                 <h5 class="mb-3">Payment</h5>
@@ -64,7 +71,7 @@
                         case "Visa":
                             <i class="fa fa-cc-visa"></i>
                             break;
-                        case "Master Card":
+                        case "MasterCard":
                             <i class="fa fa-cc-mastercard"></i>
                             break;
                         case "American Express":
@@ -81,3 +88,26 @@
 <script>
     $('#masked_card_no').text('************' + $('#card_no').val().toString().substr(-4));
 </script>
+<style>
+    svg {
+  display: block;
+  height: 70%;
+  margin: 15% auto;
+}
+
+.pizza {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: dash 5s ease-in-out infinite forwards;
+}
+
+@@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+
+
+Resources
+</style>

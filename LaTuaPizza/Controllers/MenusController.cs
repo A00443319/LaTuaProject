@@ -21,10 +21,10 @@ namespace LaTuaPizza.Controllers
         }
 
         // GET: Menus
-        /*public async Task<IActionResult> Index()
-        {
-            return View(await _context.Menu.ToListAsync());
-        }*/
+        /*
+         * Returns the Menu to the View
+         * 
+         * ***/
 
         public IActionResult Index()
         {
@@ -33,6 +33,20 @@ namespace LaTuaPizza.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult ProcessCart([FromBody] dynamic request)
+        {
+            Console.WriteLine(request);
+            //return RedirectToAction("Index", "CardDetails");
+            //return "string success";
+            string cart = Convert.ToString(request);
+            HttpContext.Session.SetString("cart", cart);
+            return Json(new { redirectToUrl = Url.Action("Index", "Cart") });
+        }
+
+
+        //-------------------------------------------------------------------------------------------------------
+        //SCAFFOLDED METHODS
 
         // GET: Menus/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -159,15 +173,5 @@ namespace LaTuaPizza.Controllers
             return _context.Menu.Any(e => e.MenuId == id);
         }
 
-        [HttpPost]
-        public IActionResult ProcessCart([FromBody] dynamic request)
-        {
-            Console.WriteLine(request);
-            //return RedirectToAction("Index", "CardDetails");
-            //return "string success";
-            string cart = Convert.ToString(request);
-            HttpContext.Session.SetString("cart", cart);
-            return Json(new { redirectToUrl = Url.Action("Index", "Cart") });
-        }
     }
 }

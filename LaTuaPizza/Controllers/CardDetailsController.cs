@@ -21,7 +21,9 @@ namespace LaTuaPizza.Controllers
             _context = context;
         }
 
-        // GET: Payment form
+        /*
+         *  Displays payment form
+         * **/
         public IActionResult Index()
         {
             Customer user = GetSignedUser();
@@ -31,7 +33,7 @@ namespace LaTuaPizza.Controllers
         }
 
         /*
-         * Reads the session object and gets the user
+         * Gets the signed in user
          * **/
         public Customer GetSignedUser()
         {
@@ -98,7 +100,7 @@ namespace LaTuaPizza.Controllers
 
 
         /*
-         * Creates the order
+         * Creates an order
          * **/
         public IActionResult CreateOrder()
         {
@@ -137,22 +139,25 @@ namespace LaTuaPizza.Controllers
         }
 
         /*
-         * Method to save 
+         * Method to save the number of items for the order
          * **/
         public IActionResult CreateMenuItem()
         {
             List<Cart> cart = GetCart();
             OrderInfo order = _context.OrderInfo.Where(m => m.CnfNo == HttpContext.Session.GetString("confirmationNumber")).FirstOrDefault();
-            foreach (Cart item in cart)
+            if (order != null)
             {
-                MenuItem menuItem = new MenuItem
+                foreach (Cart item in cart)
                 {
-                    OrdId = order.OrdId,
-                    MenuId = item.CartItem.MenuId,
-                    Qty = item.Qty
-                };
-                _context.Add(menuItem);
-                _context.SaveChanges();
+                    MenuItem menuItem = new MenuItem
+                    {
+                        OrdId = order.OrdId,
+                        MenuId = item.CartItem.MenuId,
+                        Qty = item.Qty
+                    };
+                    _context.Add(menuItem);
+                    _context.SaveChanges();
+                }
             }
             return RedirectToAction("Index", "OrderInfo");
         }

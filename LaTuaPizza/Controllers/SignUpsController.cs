@@ -18,11 +18,46 @@ namespace LaTuaPizza.Controllers
             _context = context;
         }
 
-        // GET: SignUps
+        /*
+         * Returns a Sign up form to the View
+         * **/
         public IActionResult Index()
         {
             return View();
         }
+
+        /*
+         * Registers a new customer.
+         *
+         * **/
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Register register)
+        {
+            if (ModelState.IsValid)
+            {
+                LoginCred cred = register.Credentials;
+                _context.Add(cred);
+                _context.SaveChanges();
+                register.User.EmailNavigation = _context.LoginCred.Where(a => a.Email == cred.Email).FirstOrDefault();
+                _context.Add(register.User);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                var values = ModelState.Values;
+                return View("Index", register);
+            }
+
+        }
+
+        //-----------------------------------------------------------------------------------------
+        //SCAFFOLDED METHODS
+
+
+
+
 
         // GET: SignUps/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -48,29 +83,7 @@ namespace LaTuaPizza.Controllers
             return View();
         }
 
-        // POST: SignUps/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Register register)
-        {
-            if (ModelState.IsValid)
-            {
-                LoginCred cred = register.Credentials;
-                _context.Add(cred);
-                _context.SaveChanges();
-                register.User.EmailNavigation = _context.LoginCred.Where(a => a.Email == cred.Email).FirstOrDefault();
-                _context.Add(register.User);
-                _context.SaveChanges();
-                return RedirectToAction("Index", "Home");
-            }
-            else {
-                //ModelState.AddModelError(string.Empty, "Invalid Phone");
-                return View("Index", register);
-            }
-            
-        }
+        
 
         // GET: SignUps/Edit/5
         public async Task<IActionResult> Edit(int? id)

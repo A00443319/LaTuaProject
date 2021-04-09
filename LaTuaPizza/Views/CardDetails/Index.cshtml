@@ -9,21 +9,24 @@
         <form asp-action="ValidateAndSave">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="d-block" style="margin:15px;">
-                <div>@Html.RadioButtonFor(model => model.CardType, "MasterCard") Master Card</div>
-                <div>@Html.RadioButtonFor(model => model.CardType, "Visa") Visa</div>
-                <div>@Html.RadioButtonFor(model => model.CardType, "American Express") American Express</div>
+                <div class="card_type" id="mastercard">@Html.RadioButtonFor(model => model.CardType, "MasterCard") Master Card</div>
+                <div class="card_type" id="visa">@Html.RadioButtonFor(model => model.CardType, "Visa") Visa</div>
+                <div class="card_type" id="amex">@Html.RadioButtonFor(model => model.CardType, "American Express") American Express</div>
             </div>
             <div class="form-group col-md-6 mb-3">
                 <label asp-for="CardNo" class="control-label"></label>
-                <input asp-for="CardNo" class="form-control" />
+                <input id="card" asp-for="CardNo" class="form-control" />
                 <span asp-validation-for="CardNo" class="text-danger"></span>
+                <span id="card_error" class="text-danger"></span>
 
             </div>
             <div class="form-group col-md-6 mb-3">
                 <label asp-for="CardName" class="control-label"></label>
-                <input asp-for="CardName" class="form-control" />
-                <span asp-validation-for="CardName" class="text-danger"></span>
+                <input id="card_name" asp-for="CardName" class="form-control" />
                 <small class="text-muted">Full name as displayed on card</small>
+                <span asp-validation-for="CardName" class="text-danger"></span>
+                <span id="card_name_error" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <input asp-for="Phone" value="@ViewBag.userPhone" type="hidden" class="form-control" />
@@ -47,10 +50,58 @@
     </div>
 </div>
 <script>
+    var isFormValid = true;
     var month = document.getElementById('month');
     var year = document.getElementById('year');
     var expiry = document.getElementById('expiry');
     $('#year').focusout(function () {
         expiry.value = parseInt(month.value + year.value);
+    });
+    $('#card').focusin(function () {
+        $('#card_error').text("");
+    });
+
+    $("form").submit(function (e) {
+        var card_type = $("input[name='CardType']:checked").val().toString();
+        var card_name = $('#card_name').val().toString().trim();
+        var card_no = $('#card').val().toString();
+        var msg = "";
+        //card number validation
+        if ($('#card').val().toString() != "") {
+            if (card_type == 'MasterCard') {
+                if (!(new RegExp(/^(51|55)[0-9]{14}$/).test(card_no))) {
+                    isFormValid = false;
+                    msg = "Master Card format invalid!\n16 digits allowed with 51 or 55 prefix";
+                } else {
+                    isFormValid = true;
+                }
+            } else if (card_type == 'Visa') {
+                if (!(new RegExp(/^4[0-9]{15}$/).test(card_no))) {
+                    msg = "Visa card format invalid!\n16 digits allowed for card numbers starting with prefix 4.";
+                    isFormValid = false;
+                } else {
+                    isFormValid = true;
+                }
+            } else {
+                if (!(new RegExp(/(34|37)[0-9]{13}$/).test(card_no))) {
+                    isFormValid = false;
+                    msg = "Amex card format invalid!\n15 digits allowed. Card numbers should start with 34 or 37.";
+                } else {
+                    isFormValid = true;
+                }
+            }
+        }
+
+        //card name validation
+        if (!(new RegExp(/[A-Za-z]+/).test(card_name))) {
+            $('#card_name_error').text("Card name cannot contain numbers and special characters!");
+            isFormValid = false
+        }
+
+        if (isFormValid == false) {
+            $('#card_error').text(msg);
+            e.preventDefault(e);
+            alert('Please check the details entered!');
+        }
     });
 </script>

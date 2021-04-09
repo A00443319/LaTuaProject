@@ -72,11 +72,17 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label for="state">City</label>
-                    <input asp-for="@address.City" type="text" class="form-control" id="city" value="Halifax" required="" readonly="readonly">
+                    <select id="city" asp-for="@address.City" class="form-control">
+                        <option value="">Choose city...</option>
+                        <option value="Dartmouth">Dartmouth</option>
+                        <option value="Halifax">Halifax</option>
+                    </select>
+                    <span id="city_error" class="text-danger"></span>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label for="zip">Zip</label>
                     <input asp-for="@address.PostalCode" type="text" class="form-control" id="zip" placeholder="" required="">
+                    <span id="zipcode_error" class="text-danger"></span>
                     <div class="invalid-feedback">
                         Zip code required.
                     </div>
@@ -87,3 +93,29 @@
         </form>
     </div>
 </div>
+<script>
+    var isFormValid = true;
+
+    $("form").submit(function (e) {
+        //postal code
+
+        if ($('#city').val() == "") {
+            isFormValid = false;
+            $('#city_error').text("Please choose a city");
+        } else {
+            isFormValid = true;
+        }
+
+        if (new RegExp(/^[A-Z]\d[A-Z]\d[A-Z]\d$/).test($('#zip').val()) == false) {
+            $('#zipcode_error').text("Entered postal code format is invalid");
+            isFormValid = false;
+        } else {
+            isFormValid = true;
+        }
+
+        if (isFormValid == false) {
+            e.preventDefault(e);
+            alert('Please check the details entered!');
+        }
+    });
+</script>
